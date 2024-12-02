@@ -30,3 +30,27 @@ app.get("/api/hello", function (req, res) {
 var listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
+//get url query
+app.get("/api/:date_string?", (req, res)=>{
+  const { date_string } = req.params
+//if empty
+if(!date_string){
+  let currentTime = new Date();
+  res.json({"unix":currentTime.getTime(),"utc":currentTime.toUTCString()})
+}
+//if valid data
+if(new Date(parseInt(date_string))!="Invalid Date"){
+//if unix 
+  if(!isNaN(date_string)){
+  let date = new Date(parseInt(date_string))
+  res.json({"unix": date.getTime(), "utc":date.toUTCString()})
+//if ISO
+  } else {
+    let date = new Date(date_string)
+    res.json({"unix": date.getTime(), "utc":date.toUTCString()})
+  }
+//if invalid
+} else {
+  res.json({error : "Invalid Date"})
+}
+})
